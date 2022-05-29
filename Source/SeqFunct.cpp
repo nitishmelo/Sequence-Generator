@@ -188,7 +188,7 @@ void UnalteredCreateTerms(std::vector<int> &terms, Sequence &seq, int numofTerms
 }
 void DigitGrouping(Sequence &seq)
 {
-
+	// TODO
 }
 void BasicSeqGen(Sequence &seq)
 {
