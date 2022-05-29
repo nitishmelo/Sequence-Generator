@@ -18,25 +18,27 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 		bool exit = false;
 		while (true)
 		{
-			checkagain:
-			if (missind < solsz)
-			{
-				while (totalcounter == seq.missingindices[missind])
+			while (true)
+			{ 
+				if (missind < solsz)
 				{
-					missind++;
-					totalcounter++;
-					term << "?";
-					if (totalcounter < totalsz)
+					while (totalcounter == seq.missingindices[missind])
 					{
-						term << ", ";
+						missind++;
+						totalcounter++;
+						term << "?";
+						if (totalcounter < totalsz)
+						{
+							term << ", ";
+						}
+						else
+						{
+							exit = true;
+							break;
+						}
 					}
-					else
-					{
-						exit = true;
-						break;
-					}
-					goto checkagain;
 				}
+				break;
 			}
 			if (exit)
 			{
