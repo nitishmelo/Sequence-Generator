@@ -1,4 +1,4 @@
-#include "Sequence.h"
+#include "SeqFunct.h"
 #include <string>
 #include <algorithm>
 
