@@ -6,6 +6,11 @@ void Randominit(int info[2])
 {
 	info[0] = 4 + (rand() % TERMS_RANGE);
 	info[1] = 1 + (rand() % FIRST_TERM_RANGE);
+	int isnegative = (rand() % 4);
+	if (isnegative == 3)
+	{
+		info[1] = info[1] * -1;
+	}
 }
 int RandomAddConstant()
 {
@@ -36,19 +41,31 @@ int RandomMultiplyConstant()
 	}
 	return constant;
 }
-void Randomindices(int numofTerms, std::vector<int> &missingindices)
+void Randomindices(int numofTerms, std::vector<int> &missingindices, int isgeo)
 {
 	int numofmissing;
+	bool specialcase = false;
+	if (isgeo)
+	{
+		specialcase = true;
+	}
 	if (numofTerms == 4)
 	{
 		numofmissing = 1;
 	}
 	else
-	{ 
+	{
 		int subvalue = (rand() % NUMMISSINGSUB);
 		if (numofTerms % 2 == 0)
 		{
-			numofmissing = (numofTerms / NUMTERMSDIV) - (subvalue);
+			if (subvalue == 0 && specialcase)
+			{
+				numofmissing = (numofTerms / NUMTERMSDIV) - 1;
+			}
+			else
+			{
+				numofmissing = (numofTerms / NUMTERMSDIV) - (subvalue);
+			}
 		}
 		else
 		{
@@ -66,8 +83,30 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices)
 		missingindices.push_back(pos);
 	}
 	std::sort(missingindices.begin(), missingindices.end());
+	if (specialcase)
+	{
+		if (missingindices[0] == 1)
+		{
+			int missz = missingindices.size();
+			if (missz == 1)
+			{
+				return;
+			}
+			int previndex = 1;
+			for (int i = 1; i < missz; i++)
+			{
+				if (missingindices[i] - previndex != 2)
+				{
+					return;
+				}
+				previndex = missingindices[i];
+			}
+			int whattoremove = (rand() % missz);
+			missingindices.erase(missingindices.begin() + whattoremove);
+		}
+	}
 }
-void Insert(Sequence& seq, int val, bool isMissing)
+void Insert(Sequence &seq, int val, bool isMissing)
 {
 	if (isMissing)
 	{
@@ -78,7 +117,7 @@ void Insert(Sequence& seq, int val, bool isMissing)
 		seq.terms.push_back(val);
 	}
 }
-void InsertTerms(Sequence& seq, std::vector<int> terms)
+void InsertTerms(Sequence &seq, std::vector<int> &terms)
 {
 	int i = 0;
 	int numofTerms = terms.size();
@@ -120,6 +159,33 @@ void InsertTerms(Sequence& seq, std::vector<int> terms)
 		i++;
 	}
 }
+void UnalteredCreateTerms(std::vector<int> &terms, Sequence &seq, int numofTerms, int constant, bool mulflag)
+{
+	int currterm = terms[0];
+	int newterm;
+	int i = 0;
+	if (!mulflag)
+	{
+		while (i < numofTerms - 1)
+		{
+			newterm = currterm + constant;
+			terms.push_back(newterm);
+			i++;
+			currterm = newterm;
+		}
+	}
+	else
+	{
+		while (i < numofTerms - 1)
+		{
+			newterm = currterm * constant;
+			terms.push_back(newterm);
+			i++;
+			currterm = newterm;
+		}
+	}
+	InsertTerms(seq, terms);
+}
 void DigitGrouping(Sequence &seq)
 {
 
@@ -132,7 +198,7 @@ void BasicSeqGen(Sequence &seq)
 	int firstterm = info[1];
 	int isgeo = (rand() % 2);
 	int successivealterflag = (rand() % 8);
-	int addalter = (rand() % 6);
+	int addalter = 1 + (rand() % 5);
 	int constant;
 	std::vector<int> terms;
 	terms.push_back(firstterm);
@@ -144,8 +210,7 @@ void BasicSeqGen(Sequence &seq)
 	{
 		constant = RandomMultiplyConstant();
 	}
-	int savedcons = constant;
-	Randomindices(numofTerms, seq.missingindices);
+	Randomindices(numofTerms, seq.missingindices, isgeo);
 	int i = 0;
 	int currterm = firstterm;
 	int newterm;
@@ -163,7 +228,8 @@ void BasicSeqGen(Sequence &seq)
 					currterm = newterm;
 					constant += addalter;
 				}
-				goto done;
+				InsertTerms(seq, terms);
+				return;
 			}
 			else if (successivealterflag > 5)
 			{
@@ -175,20 +241,24 @@ void BasicSeqGen(Sequence &seq)
 					currterm = newterm;
 					constant -= addalter;
 				}
-				goto done;
+				InsertTerms(seq, terms);
+				return;
 			}
 			else
 			{
-				goto unalteredadd;
+				UnalteredCreateTerms(terms, seq, numofTerms, constant, false);
+				return;
 			}
 		}
 		else
 		{
-			goto unalteredadd;
+			UnalteredCreateTerms(terms, seq, numofTerms, constant, false);
+			return;
 		}
 	}
 	else
 	{
+		int savedcons = constant;
 		if (numofTerms > 5 && savedcons > 4)
 		{ 
 			if (successivealterflag > 3 && successivealterflag < 6)
@@ -200,8 +270,9 @@ void BasicSeqGen(Sequence &seq)
 					i++;
 					currterm = newterm;
 					constant++;
-				}
-				goto done;
+				}	
+				InsertTerms(seq, terms);
+				return;
 			}
 			else if (successivealterflag > 5)
 			{
@@ -213,36 +284,19 @@ void BasicSeqGen(Sequence &seq)
 					currterm = newterm;
 					constant--;
 				}
-				goto done;
+				InsertTerms(seq, terms);
+				return;
 			}
 			else
 			{
-				goto unalteredmul;
+				UnalteredCreateTerms(terms, seq, numofTerms, constant, true);
+				return;
 			}
 		}
 		else
 		{
-			goto unalteredmul;
+			UnalteredCreateTerms(terms, seq, numofTerms, constant, true);
+			return;
 		}
 	}
-unalteredadd:
-	while (i < numofTerms - 1)
-	{
-		newterm = currterm + constant;
-		terms.push_back(newterm);
-		i++;
-		currterm = newterm;
-	}
-	goto done;
-
-unalteredmul:
-	while (i < numofTerms - 1)
-	{
-		newterm = currterm * constant;
-		terms.push_back(newterm);
-		i++;
-		currterm = newterm;
-	}
-done:
-	InsertTerms(seq, terms);
 }
