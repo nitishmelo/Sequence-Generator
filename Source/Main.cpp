@@ -6,7 +6,7 @@
 int main()
 {
 	int seqs;
-	while (std::cout << "How many sequences do you want? " && !(std::cin >> seqs))
+	while (std::cout << "Enter the number of sequences to generate: " && !(std::cin >> seqs))
 	{
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -28,6 +28,8 @@ int main()
 	std::ofstream sol;
 	term.open("seq.txt");
 	sol.open("solutions.txt");
+	std::cout << "Generating & writing sequences and solutions..." << std::endl;
+	std::cout << std::endl;
 	PrintToFile(seqs, term, sol);
 	std::cout << "Sequences & solutions generated and written successfully." << std::endl;
 	std::getchar();
