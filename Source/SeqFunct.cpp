@@ -45,16 +45,16 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, int isgeo)
 {
 	int numofmissing;
 	bool specialcase = false;
-	if (isgeo)
-	{
-		specialcase = true;
-	}
 	if (numofTerms == 4)
 	{
 		numofmissing = 1;
 	}
 	else
 	{
+		if (isgeo)
+		{
+			specialcase = true;
+		}
 		int subvalue = (rand() % NUMMISSINGSUB);
 		if (numofTerms % 2 == 0)
 		{
@@ -88,10 +88,6 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, int isgeo)
 		if (missingindices[0] == 1)
 		{
 			int missz = missingindices.size();
-			if (missz == 1)
-			{
-				return;
-			}
 			int previndex = 1;
 			for (int i = 1; i < missz; i++)
 			{
