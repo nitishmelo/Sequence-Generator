@@ -156,33 +156,6 @@ void InsertTerms(Sequence &seq, std::vector<int> &terms)
 		i++;
 	}
 }
-void UnalteredCreateTerms(std::vector<int> &terms, Sequence &seq, int numofTerms, int constant, bool mulflag)
-{
-	int currterm = terms[0];
-	int newterm;
-	int i = 0;
-	if (!mulflag)
-	{
-		while (i < numofTerms - 1)
-		{
-			newterm = currterm + constant;
-			terms.push_back(newterm);
-			i++;
-			currterm = newterm;
-		}
-	}
-	else
-	{
-		while (i < numofTerms - 1)
-		{
-			newterm = currterm * constant;
-			terms.push_back(newterm);
-			i++;
-			currterm = newterm;
-		}
-	}
-	InsertTerms(seq, terms);
-}
 void DigitGrouping(Sequence &seq)
 {
 	// TODO
@@ -208,92 +181,84 @@ void BasicSeqGen(Sequence &seq)
 		constant = RandomMultiplyConstant();
 	}
 	Randomindices(numofTerms, seq.missingindices, isgeo);
-	int i = 0;
+	int counter = 0;
 	int currterm = firstterm;
 	int newterm;
-	if (!isgeo)
+	bool isalter = false;
+	bool loopbackearly = false;
+	if (successivealterflag < 4) 
 	{
-		if (numofTerms > 5)
-		{ 
-			if (successivealterflag > 3 && successivealterflag < 6)
-			{
-				while (i < numofTerms - 1)
-				{
-					newterm = currterm + constant;
-					terms.push_back(newterm);
-					i++;
-					currterm = newterm;
-					constant += addalter;
-				}
-				InsertTerms(seq, terms);
-				return;
-			}
-			else if (successivealterflag > 5)
-			{
-				while (i < numofTerms - 1)
-				{
-					newterm = currterm + constant;
-					terms.push_back(newterm);
-					i++;
-					currterm = newterm;
-					constant -= addalter;
-				}
-				InsertTerms(seq, terms);
-				return;
-			}
-			else
-			{
-				UnalteredCreateTerms(terms, seq, numofTerms, constant, false);
-				return;
-			}
+		loopbackearly = true;
+	}
+	int savedcons = constant;
+	while (counter < numofTerms - 1)
+	{
+		if (!isgeo)
+		{
+			newterm = currterm + constant;
 		}
 		else
 		{
-			UnalteredCreateTerms(terms, seq, numofTerms, constant, false);
-			return;
+			newterm = currterm * constant;
 		}
-	}
-	else
-	{
-		int savedcons = constant;
-		if (numofTerms > 5 && savedcons > 4)
+		terms.push_back(newterm);
+		currterm = newterm;
+		counter++;
+		if (loopbackearly)
+		{
+			continue;
+		}
+		else
 		{ 
-			if (successivealterflag > 3 && successivealterflag < 6)
+			if (numofTerms > 5)
 			{
-				while (i < numofTerms - 1)
+				if (!isgeo)
 				{
-					newterm = currterm * constant;
-					terms.push_back(newterm);
-					i++;
-					currterm = newterm;
-					constant++;
-				}	
-				InsertTerms(seq, terms);
-				return;
-			}
-			else if (successivealterflag > 5)
-			{
-				while (i < numofTerms - 1)
-				{
-					newterm = currterm * constant;
-					terms.push_back(newterm);
-					i++;
-					currterm = newterm;
-					constant--;
+					if (successivealterflag > 3 && successivealterflag < 6)
+					{
+						constant += addalter;
+					}
+					else if (successivealterflag > 5)
+					{
+						constant -= addalter;
+					}
+					else
+					{
+						loopbackearly = true;
+						continue;
+					}
 				}
-				InsertTerms(seq, terms);
-				return;
+				else
+				{
+					if (savedcons > 4)
+					{
+						if (successivealterflag > 3 && successivealterflag < 6)
+						{
+							constant++;
+						}
+						else if (successivealterflag > 5)
+						{
+							constant--;
+						}
+						else
+						{
+							loopbackearly = true;
+							continue;
+						}
+					}
+					else
+					{
+						loopbackearly = true;
+						continue;
+					}
+				}
 			}
 			else
 			{
-				UnalteredCreateTerms(terms, seq, numofTerms, constant, true);
-				return;
+				loopbackearly = true;
+				continue;
 			}
 		}
-		else
-		{
-			UnalteredCreateTerms(terms, seq, numofTerms, constant, true);
-			return;
-		}
 	}
+	InsertTerms(seq, terms);
 }
