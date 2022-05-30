@@ -56,11 +56,12 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, int isgeo)
 			specialcase = true;
 		}
 		int subvalue = (rand() % NUMMISSINGSUB);
-		if (numofTerms % 2 == 0)
+		if (numofTerms % 2 == 0) 
 		{
 			if (subvalue == 0 && specialcase)
 			{
 				numofmissing = (numofTerms / NUMTERMSDIV) - 1;
+				specialcase = false;
 			}
 			else
 			{
