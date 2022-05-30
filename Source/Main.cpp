@@ -38,7 +38,7 @@ int main()
 	std::ofstream sol;
 	std::string seqfile;
 	std::string solfile;
-	std::cout << "Enter a filename to write the sequences to: ";
+	std::cout << "Enter a filename to write sequences to: ";
 	std::cin >> seqfile;
 	std::cout << std::endl;
 	std::cout << "Enter a filename to write solutions to: ";
