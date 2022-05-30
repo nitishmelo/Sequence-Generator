@@ -34,6 +34,9 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 						else
 						{
 							exit = true;
+						}
+						if (missind == solsz)
+						{
 							break;
 						}
 					}
