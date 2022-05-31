@@ -323,7 +323,7 @@ void BasicSeqGen(Sequence &seq)
 				}
 				else
 				{
-					if (savedcons > 4 || ismulalteralt == 1)
+					if (savedcons > 4 || ismulalteralt)
 					{
 						if (successivealterflag1)
 						{
