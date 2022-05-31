@@ -1,7 +1,7 @@
 #include "SeqFunct.h"
 #include <iostream>
 #include <fstream>
-void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
+void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 {
 	int x = 0;
 	Sequence seq;
@@ -13,7 +13,7 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 		size_t solsz = seq.solutions.size();
 		size_t totalsz = termsz + solsz;
 		int missind = 0;
-		term << (x + 1) << ". "; 
+		terms << (x + 1) << ". "; 
 		int counter = 0;
 		int totalcounter = 0;
 		bool exit = false;
@@ -28,11 +28,11 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 					{
 						missind++;
 						totalcounter++;
-						term << "?";
+						terms << "?";
 
 						if (totalcounter < totalsz)
 						{
-							term << ", ";
+							terms << ", ";
 						}
 						else
 						{
@@ -56,7 +56,7 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 
 			if (counter < termsz)
 			{
-				term << seq.terms[counter];
+				terms << seq.terms[counter];
 				totalcounter++;
 				counter++;
 			}
@@ -66,25 +66,25 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 				break;
 			}
 
-			term << ", ";
+			terms << ", ";
 		}
 
-		term << std::endl;
-		sol << (x + 1) << ". ";
+		terms << std::endl;
+		sols << (x + 1) << ". ";
 
 		for (int i = 0; i < solsz; i++)
 		{
 			if (i != (solsz - 1))
 			{
-				sol << seq.solutions[i] << ", ";
+				sols << seq.solutions[i] << ", ";
 			}
 			else
 			{
-				sol << seq.solutions[i];
+				sols << seq.solutions[i];
 			}
 		}
 
-		sol << std::endl;
+		sols << std::endl;
 		seq.terms.clear();
 		seq.solutions.clear();
 		seq.missingindices.clear();
