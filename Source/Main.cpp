@@ -41,10 +41,11 @@ int main()
 
 	srand(time(NULL));
 
-	std::ofstream term;
-	std::ofstream sol;
+	std::ofstream terms;
+	std::ofstream sols;
 	std::string seqfile;
 	std::string solfile;
+
 	std::cout << "Enter a filename to write sequences to: ";
 	std::cin >> seqfile;
 	std::cout << std::endl;
@@ -53,19 +54,40 @@ int main()
 	std::cin >> solfile;
 	std::cout << std::endl;
 
-	term.open(seqfile);
-	sol.open(solfile);
+	terms.open(seqfile);
+
+	if (!terms)
+	{
+		std::cout << "Failed to create & open the sequences file.";
+		std::getchar();
+		std::cout << std::endl;
+		std::cout << "Press enter to end the program." << std::endl;
+		std::getchar();
+		return 0;
+	}
+
+	sols.open(solfile);
+
+	if (!sols)
+	{
+		std::cout << "Failed to create & open the solutions file.";
+		std::getchar();
+		std::cout << std::endl;
+		std::cout << "Press enter to end the program." << std::endl;
+		std::getchar();
+		return 0;
+	}
 
 	std::cout << "Generating & writing sequences and solutions..." << std::endl;
 	std::cout << std::endl;
 
-	PrintToFile(seqs, term, sol);
+	PrintToFile(seqs, terms, sols);
 
 	std::cout << "Sequences & solutions generated and written successfully." << std::endl;
 
 	std::getchar();
-	term.close();
-	sol.close();
+	terms.close();
+	sols.close();
 	std::cout << std::endl;
 
 	std::cout << "Press enter to end the program." << std::endl;
