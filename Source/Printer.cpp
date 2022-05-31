@@ -5,6 +5,7 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 {
 	int x = 0;
 	Sequence seq;
+
 	while (x < seqs)
 	{
 		BasicSeqGen(seq);
@@ -16,6 +17,7 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 		int counter = 0;
 		int totalcounter = 0;
 		bool exit = false;
+
 		while (true)
 		{
 			while (true)
@@ -27,6 +29,7 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 						missind++;
 						totalcounter++;
 						term << "?";
+
 						if (totalcounter < totalsz)
 						{
 							term << ", ";
@@ -35,32 +38,40 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 						{
 							exit = true;
 						}
+
 						if (missind == solsz)
 						{
 							break;
 						}
 					}
 				}
+
 				break;
 			}
+
 			if (exit)
 			{
 				break;
 			}
+
 			if (counter < termsz)
 			{
 				term << seq.terms[counter];
 				totalcounter++;
 				counter++;
 			}
+
 			if (totalcounter >= totalsz)
 			{
 				break;
 			}
+
 			term << ", ";
 		}
+
 		term << std::endl;
 		sol << (x + 1) << ". ";
+
 		for (int i = 0; i < solsz; i++)
 		{
 			if (i != (solsz - 1))
@@ -72,6 +83,7 @@ void PrintToFile(int seqs, std::ostream &term, std::ostream &sol)
 				sol << seq.solutions[i];
 			}
 		}
+
 		sol << std::endl;
 		seq.terms.clear();
 		seq.solutions.clear();
