@@ -1,2 +1,2 @@
 #include <fstream>
-void PrintToFile(int seqs, std::ostream &term, std::ostream &sol);
+void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols);
