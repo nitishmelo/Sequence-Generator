@@ -32,10 +32,10 @@ int main()
 	if (seqs == 0)
 	{
 		std::cout << "No sequences generated." << std::endl;
-		std::getchar();
+		std::cin.get();
 		std::cout << std::endl;
 		std::cout << "Press enter to end the program." << std::endl;
-		std::getchar();
+		std::cin.get();
 		return 0;
 	}
 
@@ -59,10 +59,10 @@ int main()
 	if (!terms)
 	{
 		std::cout << "Failed to create & open the sequences file.";
-		std::getchar();
+		std::cin.get();
 		std::cout << std::endl;
 		std::cout << "Press enter to end the program." << std::endl;
-		std::getchar();
+		std::cin.get();
 		return 0;
 	}
 
@@ -71,10 +71,10 @@ int main()
 	if (!sols)
 	{
 		std::cout << "Failed to create & open the solutions file.";
-		std::getchar();
+		std::cin.get();
 		std::cout << std::endl;
 		std::cout << "Press enter to end the program." << std::endl;
-		std::getchar();
+		std::cin.get();
 		return 0;
 	}
 
@@ -85,11 +85,11 @@ int main()
 
 	std::cout << "Sequences & solutions generated and written successfully." << std::endl;
 
-	std::getchar();
+	std::cin.get();
 	terms.close();
 	sols.close();
 	std::cout << std::endl;
 
 	std::cout << "Press enter to end the program." << std::endl;
-	std::getchar();
+	std::cin.get();
 }
