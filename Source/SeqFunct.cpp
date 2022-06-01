@@ -46,7 +46,25 @@ int RandomMultiplyConstant()
 
 	return constant;
 }
-void Randomindices(int numofTerms, std::vector<int> &missingindices, int isgeo)
+void RandomIndiceGen(std::vector<int> &missingindices, int numofTerms, int numofMissing)
+{
+	int pos;
+
+	for (int i = 0; i < numofMissing; i++)
+	{
+		pos = rand() % numofTerms;
+
+		while ((std::find(missingindices.begin(), missingindices.end(), pos) != missingindices.end()))
+		{
+			pos = rand() % numofTerms;
+		}
+
+		missingindices.push_back(pos);
+	}
+
+	std::sort(missingindices.begin(), missingindices.end());
+}
+void Randomindices(int numofTerms, std::vector<int> &missingindices, bool isgeo)
 {
 	int numofmissing;
 	bool specialcase = false;
@@ -82,21 +100,7 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, int isgeo)
 		}
 	}
 
-	int pos;
-
-	for (int i = 0; i < numofmissing; i++)
-	{
-		pos = rand() % numofTerms;
-
-		while ((std::find(missingindices.begin(), missingindices.end(), pos) != missingindices.end()))
-		{
-			pos = rand() % numofTerms;
-		}
-
-		missingindices.push_back(pos);
-	}
-
-	std::sort(missingindices.begin(), missingindices.end());
+	RandomIndiceGen(missingindices, numofTerms, numofmissing);
 
 	if (specialcase)
 	{
@@ -191,7 +195,85 @@ void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr)
 }
 void DigitGrouping(Sequence &seq)
 {
-	// TODO
+	int firstterm = 1 + (rand() % 20);
+	bool isgeo = (rand() % 2);
+	int constant = 0;
+	int numofTerms;
+	std::vector<int> terms;
+
+	if (isgeo)
+	{
+		numofTerms = 8 + (rand() % 10);
+		constant = RandomMultiplyConstant();
+	}
+	else
+	{
+		numofTerms = 8 + (rand() % 3);
+		constant = RandomAddConstant();
+	}
+	if (constant < 0)
+	{
+		constant = constant * -1;
+	}
+	terms.push_back(firstterm);
+	int counter = 0;
+	std::vector<int> newlist;
+
+	while (counter < numofTerms - 1)
+	{
+		GenerateTerms(terms, isgeo, constant, counter);
+		counter++;
+	}
+	int numofdigits = 0;
+	bool exit = false;
+	for (int i = 0; i < numofTerms; i++)
+	{
+		int term = terms[i];
+		if (term > 9)
+		{
+			int numlen = intlen(term);
+			std::string numstr = std::to_string(term);
+
+			for (int j = 0; j < numlen; j++)
+			{
+				newlist.push_back(numstr[j] - 48);
+				numofdigits++;
+				if (numofdigits == numofTerms)
+				{
+					exit = true;
+					break;
+				}
+			}
+		}
+		else
+		{
+			newlist.push_back(term);
+			numofdigits++;
+			if (numofdigits == numofTerms)
+			{
+				exit = true;
+			}
+		}
+		if (exit)
+		{
+			break;
+		}
+	}
+	int numofMissing = (numofTerms / 4);
+	RandomIndiceGen(seq.missingindices, numofTerms, numofMissing);
+	InsertTerms(seq, newlist);
+}
+int intlen(int num)
+{
+	int length = 0;
+
+	while (num != 0)
+	{
+		length++;
+		num = num / 10;
+	}
+
+	return length;
 }
 void BasicSeqGen(Sequence& seq)
 {
