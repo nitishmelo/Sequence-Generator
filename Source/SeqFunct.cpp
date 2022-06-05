@@ -1,4 +1,5 @@
 #include "SeqFunct.h"
+#include "Helpers.h"
 #include <string>
 #include <algorithm>
 
@@ -82,7 +83,7 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, bool isgeo)
 
 		int subvalue = (rand() % NUMMISSINGSUB);
 
-		if (numofTerms % 2 == 0) 
+		if (numofTerms % 2 == 0)
 		{
 			if (subvalue == 0 && specialcase)
 			{
@@ -177,58 +178,137 @@ void InsertTerms(Sequence &seq, std::vector<int> &terms)
 		i++;
 	}
 }
-void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr)
+void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr, int extra)
 {
 	int currterm = terms[curr];
 	int newterm;
 
 	if (!isgeo)
 	{
-		newterm = currterm + constant;
+		if (extra != 0)
+		{
+			newterm = (currterm + constant) * extra;
+		}
+		else
+		{
+			newterm = currterm + constant;
+		}
 	}
 	else
 	{
-		newterm = currterm * constant;
+		if (extra != 0)
+		{
+			newterm = (currterm * constant) + extra;
+		}
+		else
+		{
+			newterm = currterm * constant;
+		}
 	}
 
 	terms.push_back(newterm);
 }
-void DigitGrouping(Sequence &seq)
+int DigitGrouping(Sequence &seq)
 {
-	int firstterm = 1 + (rand() % 20);
+	int firstterm = 1 + (rand() % 10);
 	bool isgeo = (rand() % 2);
+	int addandmul = (rand() % 8);
 	int constant = 0;
-	int numofTerms;
+	int numofTerms = 0;
+	int secondval = 0;
+	int counter = 0;
+
 	std::vector<int> terms;
 
 	if (isgeo)
 	{
-		numofTerms = 8 + (rand() % 10);
-		constant = RandomMultiplyConstant();
+		constant = 2 + (rand() % 9);
+
+		if (constant > 4)
+		{
+			numofTerms = 6 + (rand() % 2);
+		}
+		else
+		{
+			numofTerms = 7 + (rand() % 2);
+		}
+
 	}
 	else
 	{
-		numofTerms = 8 + (rand() % 3);
-		constant = RandomAddConstant();
-	}
-	if (constant < 0)
-	{
-		constant = constant * -1;
-	}
-	terms.push_back(firstterm);
-	int counter = 0;
-	std::vector<int> newlist;
+		constant = 1 + (rand() % 10);
 
-	while (counter < numofTerms - 1)
-	{
-		GenerateTerms(terms, isgeo, constant, counter);
-		counter++;
+		numofTerms = 5 + (rand() % 3);
 	}
-	int numofdigits = 0;
-	bool exit = false;
+
+	terms.push_back(firstterm);
+
+	if (addandmul < 4)
+	{
+		if (isgeo)
+		{
+			secondval = 1 + (rand() % 10);
+
+			int negval = (rand() % 2);
+
+			if (negval && ((firstterm * constant) > 15))
+			{
+				secondval = secondval * -1;
+			}
+		}
+		else
+		{
+			secondval = 2 + (rand() % 10);
+		}
+
+		if (addandmul)
+		{
+			while (true)
+			{
+				GenerateTerms(terms, isgeo, constant, counter, 0);
+				
+				counter++;
+
+				if (counter == numofTerms - 1)
+				{
+					break;
+				}
+
+				GenerateTerms(terms, !isgeo, secondval, counter, 0);
+
+				counter++;
+
+				if (counter == numofTerms - 1)
+				{
+					break;
+				}
+			}
+		}
+		else
+		{
+			while (counter < numofTerms - 1)
+			{
+				GenerateTerms(terms, isgeo, constant, counter, secondval);
+				counter++;
+			}
+		}
+	}
+	else
+	{
+		while (counter < numofTerms - 1)
+		{
+			GenerateTerms(terms, isgeo, constant, counter, 0);
+			counter++;
+		}
+	}
+	
+	std::vector<int> newlist;
+	counter = 0;
+
 	for (int i = 0; i < numofTerms; i++)
 	{
 		int term = terms[i];
+
 		if (term > 9)
 		{
 			int numlen = intlen(term);
@@ -237,45 +317,92 @@ void DigitGrouping(Sequence &seq)
 			for (int j = 0; j < numlen; j++)
 			{
 				newlist.push_back(numstr[j] - 48);
-				numofdigits++;
-				if (numofdigits == numofTerms)
-				{
-					exit = true;
-					break;
-				}
+			}
+	
+			counter++;
+
+			if (counter == numofTerms)
+			{
+				break;
 			}
 		}
 		else
 		{
 			newlist.push_back(term);
-			numofdigits++;
-			if (numofdigits == numofTerms)
+			counter++;
+
+			if (counter == numofTerms)
 			{
-				exit = true;
+				break;
 			}
 		}
-		if (exit)
-		{
-			break;
-		}
 	}
-	int numofMissing = (numofTerms / 4);
-	RandomIndiceGen(seq.missingindices, numofTerms, numofMissing);
-	InsertTerms(seq, newlist);
-}
-int intlen(int num)
-{
-	int length = 0;
 
-	while (num != 0)
+	numofTerms = newlist.size();
+	int numofMissing;
+	int numofDigits = isPrime(numofTerms);
+
+	if (numofDigits > 0)
 	{
-		length++;
-		num = num / 10;
+		std::vector<int> combineddigits;
+		numofTerms = (numofTerms / numofDigits);
+		CombineDigits(newlist, combineddigits, numofTerms, numofDigits);
+		numofMissing = 1;
+		RandomIndiceGen(seq.missingindices, numofTerms, numofMissing);
+		InsertTerms(seq, combineddigits);
+		return numofDigits;
+		
+	}
+	else
+	{
+		numofMissing = (numofTerms / 4);
+
+		if (numofMissing == 0)
+		{
+			numofMissing++;
+		}
+		else
+		{
+			if (numofMissing != 1)
+			{
+				numofMissing--;
+			}
+		}
+
+		RandomIndiceGen(seq.missingindices, numofTerms, numofMissing);
+		InsertTerms(seq, newlist);
+		return -1;
+	}
+}
+int CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int numofTerms, int numofDigits)
+{
+	int termsz = terms.size();
+	int counter = 0;
+	int returnval = 0;
+	int mul = pow(10, (numofDigits - 1));
+	int initmul = 0;
+	int total = 0;
+	int index = 0;
+
+	while (counter < numofTerms)
+	{
+		initmul = mul;
+
+		while (initmul != 0)
+		{
+			total += (terms[index] * initmul);
+			index++;
+			initmul /= 10;
+		}
+
+		combineddigits.push_back(total);
+		total = 0;
+		counter++;
 	}
 
-	return length;
+	return returnval;
 }
-void BasicSeqGen(Sequence& seq)
+void BasicSeqGen(Sequence &seq)
 {
 	int info[2];
 	Randominit(info);
@@ -372,7 +499,7 @@ void BasicSeqGen(Sequence& seq)
 				{
 					while (counter < numofTerms - 1)
 					{
-						GenerateTerms(terms, isgeo, constant, counter);
+						GenerateTerms(terms, isgeo, constant, counter, false);
 						constant += addalter;
 						counter++;
 					}
@@ -381,7 +508,7 @@ void BasicSeqGen(Sequence& seq)
 				{
 					while (counter < numofTerms - 1)
 					{
-						GenerateTerms(terms, isgeo, constant, counter);
+						GenerateTerms(terms, isgeo, constant, counter, false);
 						constant -= addalter;
 						counter++;
 					}
@@ -390,7 +517,7 @@ void BasicSeqGen(Sequence& seq)
 				{
 					while (counter < numofTerms - 1)
 					{
-						GenerateTerms(terms, isgeo, constant, counter);
+						GenerateTerms(terms, isgeo, constant, counter, false);
 						counter++;
 					}
 				}
@@ -399,7 +526,7 @@ void BasicSeqGen(Sequence& seq)
 			{
 				while (counter < numofTerms - 1)
 				{
-					GenerateTerms(terms, isgeo, constant, counter);
+					GenerateTerms(terms, isgeo, constant, counter, false);
 					counter++;
 				}
 			}
@@ -414,7 +541,7 @@ void BasicSeqGen(Sequence& seq)
 					{
 						while (counter < numofTerms - 1)
 						{
-							GenerateTerms(terms, isgeo, constant, counter);
+							GenerateTerms(terms, isgeo, constant, counter, false);
 							constant++;
 							counter++;
 						}
@@ -423,7 +550,7 @@ void BasicSeqGen(Sequence& seq)
 					{
 						while (counter < numofTerms - 1)
 						{
-							GenerateTerms(terms, isgeo, constant, counter);
+							GenerateTerms(terms, isgeo, constant, counter, false);
 							constant += mulalter;
 							counter++;
 						}
@@ -435,7 +562,7 @@ void BasicSeqGen(Sequence& seq)
 					{
 						while (counter < numofTerms - 1)
 						{
-							GenerateTerms(terms, isgeo, constant, counter);
+							GenerateTerms(terms, isgeo, constant, counter, false);
 							constant--;
 							counter++;
 						}
@@ -444,7 +571,7 @@ void BasicSeqGen(Sequence& seq)
 					{
 						while (counter < numofTerms - 1)
 						{
-							GenerateTerms(terms, isgeo, constant, counter);
+							GenerateTerms(terms, isgeo, constant, counter, false);
 							constant -= addalter;
 							counter++;
 						}
@@ -454,7 +581,7 @@ void BasicSeqGen(Sequence& seq)
 				{
 					while (counter < numofTerms - 1)
 					{
-						GenerateTerms(terms, isgeo, constant, counter);
+						GenerateTerms(terms, isgeo, constant, counter, false);
 						counter++;
 					}
 				}
@@ -463,7 +590,7 @@ void BasicSeqGen(Sequence& seq)
 			{
 				while (counter < numofTerms - 1)
 				{
-					GenerateTerms(terms, isgeo, constant, counter);
+					GenerateTerms(terms, isgeo, constant, counter, false);
 					counter++;
 				}
 			}
@@ -473,7 +600,7 @@ void BasicSeqGen(Sequence& seq)
 	{
 		while (counter < numofTerms - 1)
 		{
-			GenerateTerms(terms, isgeo, constant, counter);
+			GenerateTerms(terms, isgeo, constant, counter, false);
 			counter++;
 		}
 
