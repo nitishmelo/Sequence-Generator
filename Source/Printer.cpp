@@ -1,19 +1,38 @@
 #include "SeqFunct.h"
+#include "Printer.h"
+#include "Helpers.h"
 #include <iostream>
 #include <fstream>
+
 void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 {
 	int x = 0;
 	Sequence seq;
+	bool isGrouping;
+	int len;
+	int funct;
 
 	while (x < seqs)
 	{
-		BasicSeqGen(seq);
+		funct = (rand() % 4);
+		len = -1;
+		isGrouping = false;
+
+		if (funct)
+		{
+			BasicSeqGen(seq);
+		}
+		else
+		{
+			len = DigitGrouping(seq);
+			isGrouping = true;
+		}
+
 		size_t termsz = seq.terms.size();
 		size_t solsz = seq.solutions.size();
 		size_t totalsz = termsz + solsz;
 		int missind = 0;
-		terms << (x + 1) << ". "; 
+		terms << (x + 1) << ". ";
 		int counter = 0;
 		int totalcounter = 0;
 		bool exit = false;
@@ -21,7 +40,7 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		while (true)
 		{
 			while (true)
-			{ 
+			{
 				if (missind < solsz)
 				{
 					while (totalcounter == seq.missingindices[missind])
@@ -56,7 +75,7 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 
 			if (counter < termsz)
 			{
-				terms << seq.terms[counter];
+				PrintVal(seq.terms[counter], len, isGrouping, terms);
 				totalcounter++;
 				counter++;
 			}
@@ -76,11 +95,12 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		{
 			if (i != (solsz - 1))
 			{
-				sols << seq.solutions[i] << ", ";
+				PrintVal(seq.solutions[i], len, isGrouping, sols);
+				sols << ", ";
 			}
 			else
 			{
-				sols << seq.solutions[i];
+				PrintVal(seq.solutions[i], len, isGrouping, sols);
 			}
 		}
 
@@ -90,4 +110,32 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		seq.missingindices.clear();
 		x++;
 	}
+}
+
+void PrintVal(int val, int len, bool isGrouping, std::ostream &stream)
+{
+	if (isGrouping && (len != -1))
+	{
+		int vallen = intlen(val);
+
+		if (vallen != len)
+		{
+			int numofzeroes = (len - vallen);
+
+			for (int i = 0; i < numofzeroes; i++)
+			{
+				stream << "0";
+			}
+
+			stream << val;
+		}
+		else
+		{
+			stream << val;
+		}
+		
+		return;
+	}
+
+	stream << val;
 }
