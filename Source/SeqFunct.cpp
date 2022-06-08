@@ -47,17 +47,17 @@ int RandomMultiplyConstant()
 
 	return constant;
 }
-void RandomIndiceGen(std::vector<int> &missingindices, int numofTerms, int numofMissing)
+void RandomIndiceGen(std::vector<int> &missingindices, int numofTerms, int numofMissing, int lowerrange)
 {
 	int pos;
 
 	for (int i = 0; i < numofMissing; i++)
 	{
-		pos = rand() % numofTerms;
+		pos = lowerrange + (rand() % numofTerms);    
 
 		while ((std::find(missingindices.begin(), missingindices.end(), pos) != missingindices.end()))
 		{
-			pos = rand() % numofTerms;
+			pos = lowerrange + (rand() % numofTerms);
 		}
 
 		missingindices.push_back(pos);
@@ -101,7 +101,7 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, bool isgeo)
 		}
 	}
 
-	RandomIndiceGen(missingindices, numofTerms, numofmissing);
+	RandomIndiceGen(missingindices, numofTerms, numofmissing, 0);
 
 	if (specialcase)
 	{
@@ -210,98 +210,191 @@ void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr, 
 }
 int DigitGrouping(Sequence &seq)
 {
-	int firstterm = 1 + (rand() % 10);
-	bool isgeo = (rand() % 2);
-	int addandmul = (rand() % 8);
-	int constant = 0;
+	int isnotfibo = (rand() % 4);
+
 	int numofTerms = 0;
-	int secondval = 0;
 	int counter = 0;
+	int firstterm = 0;
 
 	std::vector<int> terms;
 
-	if (isgeo)
+	if (isnotfibo)
 	{
-		constant = 2 + (rand() % 9);
+		bool isgeo = (rand() % 2);
+		int addandmul = (rand() % 8);
+		int constant = 0;
+		int secondval = 0;
 
-		if (constant > 4)
+		if (addandmul < 4)
 		{
+			firstterm = 1 + (rand() % 9);
+			terms.push_back(firstterm);
+
 			numofTerms = 6 + (rand() % 2);
-		}
-		else
-		{
-			numofTerms = 7 + (rand() % 2);
-		}
 
-	}
-	else
-	{
-		constant = 1 + (rand() % 10);
-
-		numofTerms = 5 + (rand() % 3);
-	}
-
-	terms.push_back(firstterm);
-
-	if (addandmul < 4)
-	{
-		if (isgeo)
-		{
-			secondval = 1 + (rand() % 10);
-
-			int negval = (rand() % 2);
-
-			if (negval && ((firstterm * constant) > 15))
+			if (addandmul)
 			{
-				secondval = secondval * -1;
-			}
-		}
-		else
-		{
-			secondval = 2 + (rand() % 10);
-		}
-
-		if (addandmul)
-		{
-			while (true)
-			{
-				GenerateTerms(terms, isgeo, constant, counter, 0);
-				
-				counter++;
-
-				if (counter == numofTerms - 1)
+				if (isgeo)
 				{
-					break;
+					constant = 2 + (rand() % 9); 
+					secondval = 1 + (rand() % 10); 
+
+					int negval = (rand() % 2);
+
+					if (negval && ((firstterm * constant) > 15))
+					{
+						secondval = secondval * -1;
+					}
+				}
+				else
+				{
+					constant = 1 + (rand() % 10); 
+					secondval = 2 + (rand() % 9); 
 				}
 
-				GenerateTerms(terms, !isgeo, secondval, counter, 0);
-
-				counter++;
-
-				if (counter == numofTerms - 1)
+				while (true)
 				{
-					break;
+					GenerateTerms(terms, isgeo, constant, counter, 0);
+
+					counter++;
+
+					if (counter == numofTerms - 1)
+					{
+						break;
+					}
+
+					GenerateTerms(terms, !isgeo, secondval, counter, 0);
+
+					counter++;
+
+					if (counter == numofTerms - 1)
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				secondval = 2 + (rand() % 5);
+
+				if (isgeo)
+				{
+					constant = 2 + (rand() % 4);
+				}
+				else
+				{
+					constant = 1 + (rand() % 10);
+				}
+
+				while (counter < numofTerms - 1)
+				{
+					GenerateTerms(terms, isgeo, constant, counter, secondval);
+					counter++;
 				}
 			}
 		}
 		else
 		{
-			while (counter < numofTerms - 1)
+			int noalt = rand() % 5;
+
+			if (isgeo)
 			{
-				GenerateTerms(terms, isgeo, constant, counter, secondval);
-				counter++;
+				numofTerms = 6;
+
+				constant = 2 + (rand() % 9);
+
+				if (constant == 10)
+				{
+					constant = 2 + (rand() % 9);
+				}
+
+				if (!noalt)
+				{
+					firstterm = 1 + (rand() % 10);
+					terms.push_back(firstterm);
+
+					if (constant < 5)
+					{
+						while (counter < numofTerms - 1)
+						{
+							GenerateTerms(terms, isgeo, constant++, counter, 0);
+							counter++;
+						}
+					}
+					else if (constant > 4)
+					{
+						while (counter < numofTerms - 1)
+						{
+							GenerateTerms(terms, isgeo, constant--, counter, 0);
+							counter++;
+						}
+					}
+				}
+				else
+				{
+					firstterm = 1 + (rand() % 50);
+					terms.push_back(firstterm);
+
+					while (counter < numofTerms - 1)
+					{
+						GenerateTerms(terms, isgeo, constant, counter, 0);
+						counter++;
+					}
+				}
+
+			}
+			else
+			{
+				firstterm = 1 + (rand() % 9);
+				terms.push_back(firstterm);
+
+				numofTerms = 6 + (rand() % 2);  
+
+				if (!noalt)
+				{
+					int nosub = rand() % 2;
+
+					if (nosub)
+					{
+						constant = 1 + (rand() % 45);
+
+						while (counter < numofTerms - 1)
+						{
+							GenerateTerms(terms, isgeo, constant++, counter, 0);
+							counter++;
+						}
+					}
+					else
+					{
+						constant = 3 + (rand() % 45);
+
+						while (counter < numofTerms - 1)
+						{
+							GenerateTerms(terms, isgeo, constant--, counter, 0);
+							counter++;
+						}
+					}
+				}
+				else
+				{
+					constant = 1 + (rand() % 45);
+
+					while (counter < numofTerms - 1)
+					{
+						GenerateTerms(terms, isgeo, constant, counter, 0);
+						counter++;
+					}
+				}
 			}
 		}
 	}
+
 	else
 	{
-		while (counter < numofTerms - 1)
-		{
-			GenerateTerms(terms, isgeo, constant, counter, 0);
-			counter++;
-		}
+		FibonacciHelper(terms);
+		numofTerms = terms.size();
 	}
-	
+
 	std::vector<int> newlist;
 	counter = 0;
 
@@ -340,15 +433,24 @@ int DigitGrouping(Sequence &seq)
 
 	numofTerms = newlist.size();
 	int numofMissing;
-	int numofDigits = isPrime(numofTerms);
+	int numofDigits = isPrime(numofTerms); 
 
 	if (numofDigits > 0)
 	{
 		std::vector<int> combineddigits;
 		numofTerms = (numofTerms / numofDigits);
 		CombineDigits(newlist, combineddigits, numofTerms, numofDigits);
-		numofMissing = 1;
-		RandomIndiceGen(seq.missingindices, numofTerms, numofMissing);
+		
+		if (numofTerms < 7)
+		{
+			numofMissing = 1;
+		} 
+		else
+		{
+			numofMissing = (numofTerms / 4);
+		}
+		
+		RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
 		InsertTerms(seq, combineddigits);
 		return numofDigits;
 		
@@ -361,22 +463,14 @@ int DigitGrouping(Sequence &seq)
 		{
 			numofMissing++;
 		}
-		else
-		{
-			if (numofMissing != 1)
-			{
-				numofMissing--;
-			}
-		}
 
-		RandomIndiceGen(seq.missingindices, numofTerms, numofMissing);
+		RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
 		InsertTerms(seq, newlist);
 		return -1;
 	}
 }
 int CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int numofTerms, int numofDigits)
 {
-	int termsz = terms.size();
 	int counter = 0;
 	int returnval = 0;
 	int mul = pow(10, (numofDigits - 1));
@@ -388,7 +482,7 @@ int CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int
 	{
 		initmul = mul;
 
-		while (initmul != 0)
+		while (initmul != 0) 
 		{
 			total += (terms[index] * initmul);
 			index++;
@@ -401,6 +495,54 @@ int CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int
 	}
 
 	return returnval;
+}
+void FibonacciHelper(std::vector<int> &terms)
+{
+	int firstterm = 1 + (rand() % 10);
+	int ismul = (rand() % 2);
+	int secondterm = 0;
+	int numofTerms = 0;
+
+	if (ismul)
+	{
+		secondterm = 2 + (rand() % 10);
+
+		numofTerms = 6;
+	}
+	else
+	{
+		secondterm = 1 + (rand() % 50);
+
+		numofTerms = 6 + (rand() % 3);
+	}
+
+	terms.push_back(firstterm);
+	terms.push_back(secondterm);
+
+	if (!ismul) 
+	{
+		for (int i = 2; i < numofTerms; i++)
+		{
+			terms.push_back(terms[i - 1] + terms[i - 2]);
+		}
+	}
+	else
+	{
+		for (int i = 2; i < numofTerms; i++)
+		{
+			terms.push_back(terms[i - 1] * terms[i - 2]);
+		}
+	}
+}
+void Fibonacci(Sequence &seq)
+{
+	std::vector<int> terms;
+	FibonacciHelper(terms);
+	int termsz = terms.size();
+
+	int numofMissing = (termsz / 3);
+	RandomIndiceGen(seq.missingindices, termsz, numofMissing, 0);
+	InsertTerms(seq, terms);
 }
 void BasicSeqGen(Sequence &seq)
 {
