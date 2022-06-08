@@ -18,14 +18,18 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		len = -1;
 		isGrouping = false;
 
-		if (funct)
+		if (funct < 2)
 		{
 			BasicSeqGen(seq);
 		}
-		else
+		else if (funct == 2)
 		{
 			len = DigitGrouping(seq);
 			isGrouping = true;
+		}
+		else
+		{
+			Fibonacci(seq);
 		}
 
 		size_t termsz = seq.terms.size();
