@@ -3,12 +3,16 @@
 #include <string>
 #include "SeqFunct.h"
 #include "Printer.h"
+#include <chrono>
+#include <iomanip>
 
 #define SEQUENCE_LIMIT 1000000
 
 int main()
 {
 	int seqs;
+
+	time_t start, end;
 
 	while (std::cout << "Enter the number of sequences to generate: (LIMIT: 1000000) " && (!(std::cin >> seqs) || (seqs > SEQUENCE_LIMIT || seqs < 0)))
 	{
@@ -81,9 +85,26 @@ int main()
 	std::cout << "Generating & writing sequences and solutions..." << std::endl;
 	std::cout << std::endl;
 
+	time(&start);
+
 	PrintToFile(seqs, terms, sols);
 
-	std::cout << "Sequences & solutions generated and written successfully." << std::endl;
+	time(&end);
+
+	double totaltime = double(end - start);
+
+	std::cout << "Sequences & solutions generated and written successfully. Time taken: " << totaltime;
+	
+	if (totaltime == 1)
+	{
+		std::cout << " second";
+	}
+	else
+	{
+		std::cout << " seconds";
+	}
+
+	std::cout << std::endl;
 
 	std::cin.get();
 	terms.close();
