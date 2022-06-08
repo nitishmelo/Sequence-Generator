@@ -1,3 +1,5 @@
+#include "SeqFunct.h"
+
 int intlen(int num)
 {
 	if (num == 0)
@@ -17,22 +19,38 @@ int intlen(int num)
 }
 int isPrime(int num)
 {
+	bool isprime = true;
+
 	if (num == 1)
 	{
 		return -1;
 	}
 	
+	std::vector<int> factors;
+
 	int i = 2;
 
 	while (i * i <= num)
 	{
 		if (num % i == 0)
 		{
-			return i;
+			if ((num / i) > 2)
+			{
+				factors.push_back(i);
+				isprime = false;
+			}
 		}
 
 		i++;
 	}
-	
-	return 0;
+	if (isprime)
+	{
+		return 0;
+	}
+	else
+	{
+		int listsz = factors.size();
+		int facindex = rand() % listsz;
+		return factors[facindex];
+	}
 }
