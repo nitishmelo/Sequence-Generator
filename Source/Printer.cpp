@@ -29,7 +29,8 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		}
 		else
 		{
-			Fibonacci(seq);
+			len = Fibonacci(seq);
+			isGrouping = true;
 		}
 
 		size_t termsz = seq.terms.size();
