@@ -542,9 +542,9 @@ int Fibonacci(Sequence &seq)
 
 	FibonacciHelper(terms);
 
-	int isnotfibo = rand() % 4;
+	int notdigitlist = rand() % 4;
 
-	if (!isnotfibo)
+	if (!notdigitlist)
 	{
 		std::vector<int> newlist;
 
