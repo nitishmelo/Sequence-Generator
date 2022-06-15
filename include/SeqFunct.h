@@ -10,7 +10,9 @@ void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr, 
 void BasicSeqGen(Sequence &seq);
 
 int DigitGrouping(Sequence &seq);
-int CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int numofTerms, int numofDigits);
+void OneDigitList(std::vector<int> &terms, std::vector<int> &newlist);
+void CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int numofTerms, int numofDigits);
+int DetermineNumofDigits(std::vector<int> &newlist, Sequence &seq);
 
 void FibonacciHelper(std::vector<int> &terms);
-void Fibonacci(Sequence &seq);
+int Fibonacci(Sequence &seq);
