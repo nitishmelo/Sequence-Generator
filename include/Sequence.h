@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 
 #define TERMS_RANGE 4
 #define FIRST_TERM_RANGE 100
@@ -9,14 +10,7 @@
 
 struct Sequence
 {
-	std::vector<int> terms;
-	std::vector<int> solutions;
+	std::vector<std::string> terms;
+	std::vector<std::string> solutions;
 	std::vector<int> missingindices;
-};
-
-struct Info
-{
-	int numofTerms;
-	int firstterm;
-	int constant;
 };
