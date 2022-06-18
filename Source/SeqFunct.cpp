@@ -48,7 +48,7 @@ int RandomMultiplyConstant()
 
 	return constant;
 }
-void RandomIndiceGen(std::vector<int> &missingindices, int numofTerms, int numofMissing, int lowerrange)
+void RandomIndiceGen(std::vector<int>& missingindices, int numofTerms, int numofMissing, int lowerrange)
 {
 	int pos;
 
@@ -66,7 +66,7 @@ void RandomIndiceGen(std::vector<int> &missingindices, int numofTerms, int numof
 
 	std::sort(missingindices.begin(), missingindices.end());
 }
-void Randomindices(int numofTerms, std::vector<int> &missingindices, bool isgeo)
+void Randomindices(int numofTerms, std::vector<int>& missingindices, bool isgeo)
 {
 	int numofmissing;
 	bool specialcase = false;
@@ -125,7 +125,7 @@ void Randomindices(int numofTerms, std::vector<int> &missingindices, bool isgeo)
 		}
 	}
 }
-void Insert(Sequence &seq, int val, bool isMissing)
+void Insert(Sequence& seq, std::string val, bool isMissing)
 {
 	if (isMissing)
 	{
@@ -136,7 +136,7 @@ void Insert(Sequence &seq, int val, bool isMissing)
 		seq.terms.push_back(val);
 	}
 }
-void InsertTerms(Sequence &seq, std::vector<int> &terms)
+void InsertTerms(Sequence& seq, std::vector<std::string> &terms)
 {
 	int i = 0;
 	int numofTerms = terms.size();
@@ -179,7 +179,7 @@ void InsertTerms(Sequence &seq, std::vector<int> &terms)
 		i++;
 	}
 }
-void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr, int extra)
+void GenerateTerms(std::vector<int>& terms, bool isgeo, int constant, int curr, int extra)
 {
 	int currterm = terms[curr];
 	int newterm;
@@ -209,7 +209,7 @@ void GenerateTerms(std::vector<int> &terms, bool isgeo, int constant, int curr, 
 
 	terms.push_back(newterm);
 }
-int DigitGrouping(Sequence &seq)
+void DigitGrouping(Sequence& seq)
 {
 	int numofTerms = 0;
 	int counter = 0;
@@ -389,9 +389,9 @@ int DigitGrouping(Sequence &seq)
 
 	OneDigitList(terms, newlist);
 
-	return DetermineNumofDigits(newlist, seq);
+	DetermineNumofDigits(newlist, seq);
 }
-void OneDigitList(std::vector<int> &terms, std::vector<int> &newlist)
+void OneDigitList(std::vector<int>& terms, std::vector<int>& newlist)
 {
 	int counter = 0;
 
@@ -430,7 +430,7 @@ void OneDigitList(std::vector<int> &terms, std::vector<int> &newlist)
 		}
 	}
 }
-void CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, int numofTerms, int numofDigits)
+void CombineDigits(std::vector<int>& terms, std::vector<int>& combineddigits, int numofTerms, int numofDigits)
 {
 	int counter = 0;
 	int returnval = 0;
@@ -456,7 +456,7 @@ void CombineDigits(std::vector<int> &terms, std::vector<int> &combineddigits, in
 	}
 
 }
-int DetermineNumofDigits(std::vector<int> &newlist, Sequence &seq)
+void DetermineNumofDigits(std::vector<int>& newlist, Sequence& seq)
 {
 	int numofMissing;
 
@@ -480,8 +480,12 @@ int DetermineNumofDigits(std::vector<int> &newlist, Sequence &seq)
 		}
 
 		RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
-		InsertTerms(seq, combineddigits);
-		return numofDigits;
+
+		std::vector<std::string> strlist;
+
+		ConvertoStrings(combineddigits, strlist, numofDigits);
+
+		InsertTerms(seq, strlist);
 
 	}
 	else
@@ -494,11 +498,15 @@ int DetermineNumofDigits(std::vector<int> &newlist, Sequence &seq)
 		}
 
 		RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
-		InsertTerms(seq, newlist);
-		return -1;
+
+		std::vector<std::string> strlist;
+
+		ConvertoStrings(newlist, strlist, -1);
+
+		InsertTerms(seq, strlist);
 	}
 }
-void FibonacciHelper(std::vector<int> &terms)
+void FibonacciHelper(std::vector<int>& terms)
 {
 	int firstterm = 1 + (rand() % 20);
 	int ismul = (rand() % 2);
@@ -536,7 +544,7 @@ void FibonacciHelper(std::vector<int> &terms)
 		}
 	}
 }
-int Fibonacci(Sequence &seq)
+void Fibonacci(Sequence& seq)
 {
 	std::vector<int> terms;
 
@@ -550,20 +558,100 @@ int Fibonacci(Sequence &seq)
 
 		OneDigitList(terms, newlist);
 
-		return DetermineNumofDigits(newlist, seq);
+		DetermineNumofDigits(newlist, seq);
 	}
 	else
 	{
 		int termsz = terms.size();
 
 		int numofMissing = (termsz / 3);
-		RandomIndiceGen(seq.missingindices, termsz, numofMissing, 0);
-		InsertTerms(seq, terms);
 
-		return -1;
+		RandomIndiceGen(seq.missingindices, termsz, numofMissing, 0);
+
+		std::vector<std::string> strlist;
+
+		ConvertoStrings(terms, strlist, -1);
+
+		InsertTerms(seq, strlist);
 	}
 }
-void BasicSeqGen(Sequence &seq)
+void DigitOperations(Sequence &seq)
+{
+	std::vector<int> terms;
+
+	std::string OPS = "AMS";
+
+	std::string opstring = "";
+
+	int firstterm = 1001 + (rand() % 8999);
+
+	terms.push_back(firstterm);
+
+	int numofTerms = 5 + (rand() % 4);
+
+	int numofops = 1 + (rand() % 3);
+
+	for (int i = 0; i < numofops; i++)
+	{
+		opstring += OPS.at(rand() % 3);
+	}
+
+	int chindex = 0;
+
+	int opsz = opstring.size();
+
+	for (int i = 0; i < numofTerms; i++)
+	{
+		int term = terms[i];
+
+		if (term > 999998)
+		{
+			break;
+		}
+
+		int termsz = intlen(term);
+
+		std::string strterm = std::to_string(term);
+
+		std::string newterm = "";
+
+		for (int j = 0; j < termsz - 1; j++)
+		{
+			char op = opstring.at(chindex);
+
+			int val = 0;
+
+			if (op == 'A')
+			{
+				val = (strterm.at(j) - 48) + (strterm.at(j + 1) - 48);
+			}
+
+			if (op == 'M')
+			{
+				val = (strterm.at(j) - 48) * (strterm.at(j + 1) - 48);
+			}
+
+			if (op == 'S')
+			{
+				val = abs((strterm.at(j) - 48) - (strterm.at(j + 1) - 48));
+			}
+
+			newterm += std::to_string(val);
+
+			if (chindex == opsz - 1)
+			{
+				chindex = 0;
+			}
+			else
+			{
+				chindex++;
+			}
+		}
+
+		terms.push_back(std::stoi(newterm));
+	}
+}
+void BasicSeqGen(Sequence& seq)
 {
 	int info[2];
 	Randominit(info);
@@ -767,5 +855,9 @@ void BasicSeqGen(Sequence &seq)
 
 	}
 
-	InsertTerms(seq, terms);
+	std::vector<std::string> strlist;
+
+	ConvertoStrings(terms, strlist, -1);
+
+	InsertTerms(seq, strlist);
 }
