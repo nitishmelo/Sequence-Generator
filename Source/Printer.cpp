@@ -4,19 +4,15 @@
 #include <iostream>
 #include <fstream>
 
-void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
+void PrintToFile(int seqs, std::ostream& terms, std::ostream& sols)
 {
 	int x = 0;
 	Sequence seq;
-	bool isGrouping;
-	int len;
 	int funct;
 
 	while (x < seqs)
 	{
 		funct = (rand() % 4);
-		len = -1;
-		isGrouping = false;
 
 		if (funct < 2)
 		{
@@ -24,13 +20,11 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		}
 		else if (funct == 2)
 		{
-			len = DigitGrouping(seq);
-			isGrouping = true;
+			DigitGrouping(seq);
 		}
 		else
 		{
-			len = Fibonacci(seq);
-			isGrouping = true;
+			Fibonacci(seq);
 		}
 
 		size_t termsz = seq.terms.size();
@@ -80,7 +74,7 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 
 			if (counter < termsz)
 			{
-				PrintVal(seq.terms[counter], len, isGrouping, terms);
+				PrintVal(seq.terms[counter], terms);
 				totalcounter++;
 				counter++;
 			}
@@ -100,12 +94,12 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 		{
 			if (i != (solsz - 1))
 			{
-				PrintVal(seq.solutions[i], len, isGrouping, sols);
+				PrintVal(seq.solutions[i], sols);
 				sols << ", ";
 			}
 			else
 			{
-				PrintVal(seq.solutions[i], len, isGrouping, sols);
+				PrintVal(seq.solutions[i], sols);
 			}
 		}
 
@@ -117,30 +111,7 @@ void PrintToFile(int seqs, std::ostream &terms, std::ostream &sols)
 	}
 }
 
-void PrintVal(int val, int len, bool isGrouping, std::ostream &stream)
+void PrintVal(std::string val, std::ostream &stream)
 {
-	if (isGrouping && (len != -1))
-	{
-		int vallen = intlen(val);
-
-		if (vallen != len)
-		{
-			int numofzeroes = (len - vallen);
-
-			for (int i = 0; i < numofzeroes; i++)
-			{
-				stream << "0";
-			}
-
-			stream << val;
-		}
-		else
-		{
-			stream << val;
-		}
-		
-		return;
-	}
-
 	stream << val;
 }
