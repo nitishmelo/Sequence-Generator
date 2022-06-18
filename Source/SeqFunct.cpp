@@ -476,7 +476,7 @@ void DetermineNumofDigits(std::vector<int>& newlist, Sequence& seq)
 		}
 		else
 		{
-			numofMissing = (numofTerms / 4);
+			numofMissing = (numofTerms / 5);
 		}
 
 		RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
