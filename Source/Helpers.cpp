@@ -54,3 +54,42 @@ int isPrime(int num)
 		return factors[facindex];
 	}
 }
+void ConvertoStrings(std::vector<int> &terms, std::vector<std::string> &newlist, int len)
+{
+	int termsz = terms.size();
+
+	if (len == -1)
+	{
+		for (int i = 0; i < termsz; i++)
+		{
+			newlist.push_back(std::to_string(terms[i]));
+		}
+	}
+	else
+	{
+		for (int i = 0; i < termsz; i++)
+		{
+			int val = terms[i]; 
+			
+			newlist.push_back("");
+
+			int vallen = intlen(val);
+
+			if (vallen != len)
+			{
+				int numofzeroes = (len - vallen);
+
+				for (int j = 0; j < numofzeroes; j++)
+				{
+					newlist[i] += "0";
+				}
+
+				newlist[i] += std::to_string(val);
+			}
+			else
+			{
+				newlist[i] += std::to_string(val);
+			}
+		}
+	}
+}
