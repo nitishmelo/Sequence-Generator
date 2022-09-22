@@ -5,7 +5,7 @@
 
 void Randominit(int info[2])
 {
-	info[0] = 4 + (rand() % TERMS_RANGE);
+	info[0] = 5 + (rand() % TERMS_RANGE);
 	info[1] = 1 + (rand() % FIRST_TERM_RANGE);
 
 	int isnegative = (rand() % 5);
@@ -68,41 +68,34 @@ void RandomIndiceGen(std::vector<int>& missingindices, int numofTerms, int numof
 }
 void Randomindices(int numofTerms, std::vector<int>& missingindices, bool isgeo)
 {
-	int numofmissing;
+	int numofmissing = 0;
 	bool specialcase = false;
 
-	if (numofTerms == 4)
+	if (isgeo)
+	{
+		specialcase = true;
+	}
+
+	if (numofTerms == 5)
 	{
 		numofmissing = 1;
+
+		specialcase = false;
 	}
-	else
+
+	if (numofTerms == 6)
 	{
-		if (isgeo)
-		{
-			specialcase = true;
-		}
+		numofmissing = 2;
 
-		int subvalue = (rand() % NUMMISSINGSUB);
-
-		if (numofTerms % 2 == 0)
-		{
-			if (subvalue == 0 && specialcase)
-			{
-				numofmissing = (numofTerms / NUMTERMSDIV) - 1;
-				specialcase = false;
-			}
-			else
-			{
-				numofmissing = (numofTerms / NUMTERMSDIV) - (subvalue);
-			}
-		}
-		else
-		{
-			numofmissing = (numofTerms / NUMTERMSDIV);
-		}
+		specialcase = false;
+	}
+		
+	if (numofTerms == 7)
+	{
+		numofmissing = 3;
 	}
 
-	RandomIndiceGen(missingindices, numofTerms, numofmissing, 0);
+	RandomIndiceGen(missingindices, numofTerms - 2, numofmissing, 1);
 
 	if (specialcase)
 	{
@@ -221,6 +214,7 @@ void DigitGrouping(Sequence& seq)
 	int addandmul = (rand() % 8);
 	int constant = 0;
 	int secondval = 0;
+
 
 	if (addandmul < 4)
 	{
@@ -385,6 +379,7 @@ void DigitGrouping(Sequence& seq)
 		}
 	}
 
+
 	std::vector<int> newlist;
 
 	OneDigitList(terms, newlist);
@@ -506,41 +501,226 @@ void DetermineNumofDigits(std::vector<int>& newlist, Sequence& seq)
 		InsertTerms(seq, strlist);
 	}
 }
+void FH(std::vector<int>& terms)
+{
+	
+
+				// 2, 5, 7, 12, 19....
+
+				// 2, 5, 7, 12, 9, 14, 14, 19, ?, 16
+				// 2, 5, 7, 12, 12, 17, 19, ?, ?, 29
+				// 2, 5, 7, 16, 12, 21, 23, ?, 28, ?, 33, 42
+				// 2, 5, 7, 16, 23, 32, ?, 64
+				// 2, 5, 7, 12, 19, 24, ?, 36, 43, ?
+				// 3, 5, 8, 14, 13, ?, 22, 28, ?, 33
+
+				// 2, 5, 10, 60, 20, 120, 120, ?, 40, ?
+				// 2, 5, 10, 60, 50, 300, 600, 3600, 
+
+				// 9, 7, 6, 22, 28, 37, ?, 59, 65, ?, 74, ? 
+				// 3, 3, 7, 13, 21, 23, 31, 41, ?, 57, 65
+				// 3, 3, 7, 13, 21, 27, ?, 67, 128, 134
+				// 3, 3, 7, 21, 39, ?, 143
+				// 2, 5, 6, 10, 40, 30, ?, 60, 240, 400, 1600
+	
+}
+void FHelper2(std::vector<int>& terms, int ismul, int notaltfibo, int distinct, int constant, int mul)
+{
+	
+}
 void FibonacciHelper(std::vector<int>& terms)
 {
-	int firstterm = 1 + (rand() % 20);
+	int firstterm = 0;
 	int ismul = (rand() % 2);
 	int secondterm = 0;
 	int numofTerms = 0;
 
+	int isgeo = 0;
+
+	int distinct = 0;
+
+	int constant = 0;
+
 	if (ismul)
 	{
-		secondterm = 1 + (rand() % 10);
+		firstterm = 2 + (rand() % 9);
+
+		secondterm = 2 + (rand() % 10);
 
 		numofTerms = 6;
 	}
 	else
 	{
+		firstterm = 1 + (rand() % 50);
+
 		secondterm = 1 + (rand() % 50);
 
-		numofTerms = 6 + (rand() % 3);
+		numofTerms = 7 + (rand() % 3);
 	}
 
 	terms.push_back(firstterm);
 	terms.push_back(secondterm);
+	
+	int notaltfibo = rand() % 4;
+
+	if (!notaltfibo)
+	{
+		isgeo = rand() % 2;
+
+		distinct = rand() % 3;
+
+		if (isgeo)
+		{
+			constant = 2 + (rand() % 4);
+		}
+		else
+		{
+			constant = 1 + (rand() % 10);
+		}
+	}
 
 	if (!ismul)
 	{
-		for (int i = 2; i < numofTerms; i++)
+		if (notaltfibo)
 		{
-			terms.push_back(terms[i - 1] + terms[i - 2]);
+			for (int i = 2; i < numofTerms; i++)
+			{
+				terms.push_back(terms[i - 1] + terms[i - 2]);
+			}
+		}
+		else
+		{
+			if (isgeo)
+			{
+				if (!distinct)
+				{
+					for (int i = 2; i < numofTerms; i++)
+					{
+						int val = terms[i - 1] + terms[i - 2];
+
+						terms.push_back(val * constant);
+					}
+
+				} 
+				else
+				{
+					for (int i = 2; i < numofTerms; i+=2)
+					{
+						int val = terms[i - 1] + terms[i - 2]; 
+
+						terms.push_back(val);
+
+						if ((i + 1) == numofTerms)
+						{
+							break;
+						}
+
+						terms.push_back(val * constant); 
+					}
+				}
+			}
+			else
+			{
+				if (!distinct)
+				{
+					for (int i = 2; i < numofTerms; i++)
+					{
+						int val = terms[i - 1] + terms[i - 2];
+
+						terms.push_back(val + constant);
+					}
+				}
+				else
+				{
+					for (int i = 2; i < numofTerms; i += 2)
+					{
+						int val = terms[i - 1] + terms[i - 2];
+
+						terms.push_back(val);
+
+						if ((i + 1) == numofTerms)
+						{
+							break;
+						}
+
+						terms.push_back(val + constant);
+					}
+				}
+			}
 		}
 	}
 	else
 	{
-		for (int i = 2; i < numofTerms; i++)
+		if (notaltfibo)
 		{
-			terms.push_back(terms[i - 1] * terms[i - 2]);
+			if (firstterm < 6 && secondterm < 6)
+			{
+				numofTerms += (rand() % 2);
+			}
+
+			for (int i = 2; i < numofTerms; i++)
+			{
+				terms.push_back(terms[i - 1] * terms[i - 2]);
+			}
+		}
+		else
+		{
+			if (isgeo)
+			{
+				if (secondterm < 7)
+				{
+					if (secondterm < 5)
+					{
+						numofTerms += (1 + (rand() % 2));
+					}
+					else
+					{
+						numofTerms++;
+					}
+				}
+
+				for (int i = 2; i < numofTerms; i += 2)
+				{
+					int val = terms[i - 1] * terms[i - 2];
+
+					terms.push_back(val);
+
+					if ((i + 1) == numofTerms)
+					{
+						break;
+					}
+
+					terms.push_back(val * constant);
+				}
+			}
+			else
+			{
+				if (!distinct)
+				{
+					for (int i = 2; i < numofTerms; i++)
+					{
+						int val = terms[i - 1] * terms[i - 2];
+
+						terms.push_back(val + constant);
+					}
+				}
+				else
+				{
+					for (int i = 2; i < numofTerms; i += 2)
+					{
+						int val = terms[i - 1] * terms[i - 2];
+
+						terms.push_back(val);
+
+						if ((i + 1) == numofTerms)
+						{
+							break;
+						}
+
+						terms.push_back(val + constant);
+					}
+				}
+			}
 		}
 	}
 }
@@ -564,9 +744,25 @@ void Fibonacci(Sequence& seq)
 	{
 		int termsz = terms.size();
 
-		int numofMissing = (termsz / 3);
+		int numofMissing; 
 
-		RandomIndiceGen(seq.missingindices, termsz, numofMissing, 0);
+		if (termsz < 8)
+		{
+			numofMissing = 1;
+		}
+		else
+		{
+			if (termsz == 8)
+			{
+				numofMissing = 2;
+			}
+			else
+			{
+				numofMissing = 3;
+			}
+		}
+
+		RandomIndiceGen(seq.missingindices, termsz - 2, numofMissing, 1);
 
 		std::vector<std::string> strlist;
 
@@ -579,7 +775,7 @@ void DigitOperations(Sequence &seq)
 {
 	std::vector<int> terms;
 
-	std::string OPS = "AMS";
+	const std::string OPS = "AMS";
 
 	std::string opstring = "";
 
@@ -587,69 +783,27 @@ void DigitOperations(Sequence &seq)
 
 	terms.push_back(firstterm);
 
-	int numofTerms = 5 + (rand() % 4);
+	int op = 1 + (rand() % 3);
 
-	int numofops = 1 + (rand() % 3);
-
-	for (int i = 0; i < numofops; i++)
+	for (int i = 0; i < op; i++)
 	{
-		opstring += OPS.at(rand() % 3);
+		int opindex = rand() % 3;
+
+		char c = OPS.at(opindex);
+
+		opstring.push_back(c);
 	}
 
-	int chindex = 0;
+	int opstringsz = opstring.size();
 
-	int opsz = opstring.size();
-
-	for (int i = 0; i < numofTerms; i++)
+	
+	for (int i = 0; i < opstringsz; i++)
 	{
-		int term = terms[i];
 
-		if (term > 999998)
-		{
-			break;
-		}
-
-		int termsz = intlen(term);
-
-		std::string strterm = std::to_string(term);
-
-		std::string newterm = "";
-
-		for (int j = 0; j < termsz - 1; j++)
-		{
-			char op = opstring.at(chindex);
-
-			int val = 0;
-
-			if (op == 'A')
-			{
-				val = (strterm.at(j) - 48) + (strterm.at(j + 1) - 48);
-			}
-
-			if (op == 'M')
-			{
-				val = (strterm.at(j) - 48) * (strterm.at(j + 1) - 48);
-			}
-
-			if (op == 'S')
-			{
-				val = abs((strterm.at(j) - 48) - (strterm.at(j + 1) - 48));
-			}
-
-			newterm += std::to_string(val);
-
-			if (chindex == opsz - 1)
-			{
-				chindex = 0;
-			}
-			else
-			{
-				chindex++;
-			}
-		}
-
-		terms.push_back(std::stoi(newterm));
 	}
+
+
+
 }
 void BasicSeqGen(Sequence& seq)
 {
@@ -682,7 +836,7 @@ void BasicSeqGen(Sequence& seq)
 
 			if (!tensalter)
 			{
-				addalter = addalter * 10;
+				//addalter = addalter * 10;
 			}
 
 			int misssz = seq.missingindices.size();
