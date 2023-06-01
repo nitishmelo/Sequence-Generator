@@ -21,3 +21,4 @@ void FibonacciHelper(std::vector<int> &terms);
 void Fibonacci(Sequence &seq);
 
 void DigitOperations(Sequence &seq);
+void SumsAndProducts(Sequence &seq);

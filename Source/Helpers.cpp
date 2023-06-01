@@ -1,95 +1,80 @@
-#include "SeqFunct.h"
+#include "../include/SeqFunct.h"
 
 int intlen(int num)
 {
-	if (num == 0)
-	{
-		return 1;
-	}
+    if (num == 0) {
+        return 1;
+    }
 
-	int length = 0;
+    int length = 0;
 
-	while (num != 0)
-	{
-		length++;
-		num = num / 10;
-	}
+    while (num != 0) {
+        length++;
+        num = num / 10;
+    }
 
-	return length;
+    return length;
 }
 int isPrime(int num)
 {
-	bool isprime = true;
+    bool isprime = true;
 
-	if (num == 1)
-	{
-		return -1;
-	}
-	
-	std::vector<int> factors;
+    if (num == 1) {
+        return -1;
+    }
 
-	int i = 2;
+    std::vector<int> factors;
 
-	while (i * i <= num)
-	{
-		if (num % i == 0)
-		{
-			if ((num / i) > 2)
-			{
-				factors.push_back(i);
-				isprime = false;
-			}
-		}
+    int i = 2;
 
-		i++;
-	}
-	if (isprime)
-	{
-		return 0;
-	}
-	else
-	{
-		int listsz = factors.size();
-		int facindex = rand() % listsz;
-		return factors[facindex];
-	}
+    while (i * i <= num) {
+        if (num % i == 0) {
+            if ((num / i) > 2) {
+                factors.push_back(i);
+                isprime = false;
+            }
+        }
+
+        i++;
+    }
+    if (isprime) {
+        return 0;
+    }
+    else {
+        int listsz = factors.size();
+        int facindex = rand() % listsz;
+        return factors[facindex];
+    }
 }
-void ConvertoStrings(std::vector<int> &terms, std::vector<std::string> &newlist, int len)
+void ConvertoStrings(std::vector<int>& terms, std::vector<std::string>& newlist, int len)
 {
-	int termsz = terms.size();
+    int termsz = terms.size();
 
-	if (len == -1)
-	{
-		for (int i = 0; i < termsz; i++)
-		{
-			newlist.push_back(std::to_string(terms[i]));
-		}
-	}
-	else
-	{
-		for (int i = 0; i < termsz; i++)
-		{
-			int val = terms[i]; 
-			
-			newlist.push_back("");
+    if (len == -1) {
+        for (int i = 0; i < termsz; i++) {
+            newlist.push_back(std::to_string(terms[i]));
+        }
+    }
+    else {
+        for (int i = 0; i < termsz; i++) {
+            int val = terms[i];
 
-			int vallen = intlen(val);
+            newlist.push_back("");
 
-			if (vallen != len)
-			{
-				int numofzeroes = (len - vallen);
+            int vallen = intlen(val);
 
-				for (int j = 0; j < numofzeroes; j++)
-				{
-					newlist[i] += "0";
-				}
+            if (vallen != len) {
+                int numofzeroes = (len - vallen);
 
-				newlist[i] += std::to_string(val);
-			}
-			else
-			{
-				newlist[i] += std::to_string(val);
-			}
-		}
-	}
+                for (int j = 0; j < numofzeroes; j++) {
+                    newlist[i] += "0";
+                }
+
+                newlist[i] += std::to_string(val);
+            }
+            else {
+                newlist[i] += std::to_string(val);
+            }
+        }
+    }
 }
