@@ -34,9 +34,8 @@ void RandomIndiceGen(std::vector<int>& missingindices, int numofTerms, int numof
     int pos;
     for (int i = 0; i < numofMissing; i++) {
         pos = lowerrange + (rand() % numofTerms);
-        while ((std::find(missingindices.begin(), missingindices.end(), pos) != missingindices.end())) {
+        while ((std::find(missingindices.begin(), missingindices.end(), pos) != missingindices.end()))
             pos = lowerrange + (rand() % numofTerms);
-        }
         missingindices.push_back(pos);
     }
     std::sort(missingindices.begin(), missingindices.end());
@@ -44,9 +43,8 @@ void RandomIndiceGen(std::vector<int>& missingindices, int numofTerms, int numof
 void Randomindices(int numofTerms, std::vector<int>& missingindices, bool isgeo) {
     int numofmissing = 0;
     bool specialcase = false;
-    if (isgeo) {
+    if (isgeo)
         specialcase = true;
-    }
     if (numofTerms < 7) {
         numofmissing = 1;
         specialcase = false;
@@ -61,9 +59,8 @@ void Randomindices(int numofTerms, std::vector<int>& missingindices, bool isgeo)
             int missz = missingindices.size();
             int previndex = 1;
             for (int i = 1; i < missz; i++) {
-                if (missingindices[i] - previndex != 2) {
+                if (missingindices[i] - previndex != 2)
                     return;
-                }
                 previndex = missingindices[i];
             }
             int whattoremove = (rand() % missz);
@@ -88,9 +85,8 @@ void InsertTerms(Sequence& seq, std::vector<std::string>& terms) {
                 Insert(seq, terms[0], true);
                 tracksz++;
             }
-            else {
+            else
                 Insert(seq, terms[0], false);
-            }
         }
         else {
             if (tracksz < missingindsz) {
@@ -98,13 +94,11 @@ void InsertTerms(Sequence& seq, std::vector<std::string>& terms) {
                     tracksz++;
                     Insert(seq, terms[i], true);
                 }
-                else {
+                else
                     Insert(seq, terms[i], false);
-                }
             }
-            else {
+            else
                 Insert(seq, terms[i], false);
-            }
         }
         i++;
     }
@@ -113,20 +107,16 @@ void GenerateTerms(std::vector<int>& terms, bool isgeo, int constant, int curr, 
     int currterm = terms[curr];
     int newterm;
     if (!isgeo) {
-        if (extra != 0) {
+        if (extra != 0)
             newterm = (currterm + constant) * extra;
-        }
-        else {
+        else
             newterm = currterm + constant;
-        }
     }
     else {
-        if (extra != 0) {
+        if (extra != 0)
             newterm = (currterm * constant) + extra;
-        }
-        else {
+        else
             newterm = currterm * constant;
-        }
     }
     terms.push_back(newterm);
 }
