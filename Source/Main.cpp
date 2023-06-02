@@ -6,32 +6,20 @@
 #include <chrono>
 #include <iomanip>
 
-#define SEQUENCE_LIMIT 1000000
+#define SEQUENCE_LIMIT 100000
 
-int main()
-{
+int main() {
     int seqs;
-
-    time_t start, end;
-
-    while (std::cout << "Enter the number of sequences to generate: (LIMIT: 1000000) " && (!(std::cin >> seqs) || (seqs > SEQUENCE_LIMIT || seqs < 0))) {
+    while (std::cout << "Enter the number of sequences to generate: (LIMIT: " << SEQUENCE_LIMIT << ") " && (!(std::cin >> seqs) || (seqs > SEQUENCE_LIMIT || seqs < 0))) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-        if (seqs > SEQUENCE_LIMIT) {
-            std::cout << std::endl
-                      << "Exceeded sequence limit; try again: " << std::endl;
-        }
-        else {
-            std::cout << std::endl
-                      << "Invalid input; try again: " << std::endl;
-        }
-
+        if (seqs > SEQUENCE_LIMIT)
+            std::cout << std::endl << "Exceeded sequence limit; try again: " << std::endl;
+        else
+            std::cout << std::endl << "Invalid input; try again: " << std::endl;
         std::cout << std::endl;
     }
-
     std::cout << std::endl;
-
     if (seqs == 0) {
         std::cout << "No sequences generated." << std::endl;
         std::cin.get();
@@ -40,24 +28,19 @@ int main()
         std::cin.get();
         return 0;
     }
-
     srand(time(NULL));
 
     std::ofstream terms;
     std::ofstream sols;
     std::string seqfile;
     std::string solfile;
-
     std::cout << "Enter a filename to write sequences to: ";
     std::cin >> seqfile;
     std::cout << std::endl;
-
     std::cout << "Enter a filename to write solutions to: ";
     std::cin >> solfile;
     std::cout << std::endl;
-
     terms.open(seqfile);
-
     if (!terms) {
         std::cout << "Failed to create & open the sequences file.";
         std::cin.get();
@@ -80,31 +63,16 @@ int main()
 
     std::cout << "Generating & writing sequences and solutions..." << std::endl;
     std::cout << std::endl;
-
-    time(&start);
-
+    auto start = std::chrono::steady_clock::now();
     PrintToFile(seqs, terms, sols);
-
-    time(&end);
-
-    double totaltime = double(end - start);
-
-    std::cout << "Sequences & solutions generated and written successfully. Time taken: " << totaltime;
-
-    if (totaltime == 1) {
-        std::cout << " second";
-    }
-    else {
-        std::cout << " seconds";
-    }
+    auto end = std::chrono::steady_clock::now();
+    std::cout << "Sequences & solutions generated and written successfully. Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms";
 
     std::cout << std::endl;
-
     std::cin.get();
     terms.close();
     sols.close();
     std::cout << std::endl;
-
     std::cout << "Press enter to end the program." << std::endl;
     std::cin.get();
 }
