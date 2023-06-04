@@ -1,8 +1,11 @@
 #include "../include/SeqFunct.h"
 #include "../include/Helpers.h"
+#include <cstdlib>
 #include <math.h>
 #include <string>
 #include <algorithm>
+#include <random>
+#include <chrono>
 
 void Randominit(int info[2]) {
     info[0] = 5 + (rand() % TERMS_RANGE);
@@ -284,14 +287,39 @@ void DetermineNumofDigits(std::vector<int>& newlist, Sequence& seq) {
         if (numofTerms < 7)
             numofMissing = 1;
         else
-            numofMissing = (numofTerms / 5);
+            numofMissing = (numofTerms / 6);
         RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
         std::vector<std::string> strlist;
         ConvertoStrings(combineddigits, strlist, numofDigits);
+        int chars = strlist[0].length();
+        if (chars > 1 && strlist.size() > 6){
+            int norandIndex = rand() % 5;
+            norandIndex = 0;
+            if (!norandIndex){
+                std::vector<int> indices;
+                int noShuffle = rand() % 10;
+                if (noShuffle || chars < 3)
+                    for (int i = chars - 1; i > -1; i--)
+                        indices.push_back(i);
+                else{
+                    for (int i = 0; i < chars; i++)
+                        indices.push_back(i);
+                    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+                    std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
+                }
+                for (int i = 0; i < strlist.size(); i++){
+                    std::string term = strlist[i];
+                    std::string rearranged = "";
+                    for (int j = 0; j < chars; j++)
+                        rearranged += term[indices[j]];
+                    strlist.at(i) = rearranged;
+                }
+            }
+        }
         InsertTerms(seq, strlist);
     }
     else {
-        numofMissing = (numofTerms / 4);
+        numofMissing = (numofTerms / 5);
         if (numofMissing == 0)
             numofMissing++;
         RandomIndiceGen(seq.missingindices, numofTerms - 2, numofMissing, 1);
