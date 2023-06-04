@@ -19,7 +19,6 @@ int RandomAddConstant() {
     return constant;
 }
 int RandomMultiplyConstant() {
-    int i = 0;
     int constant = 2 + (rand() % MUL_RANGE);
     if (constant == 10)
         constant = 2 + (rand() % MUL_RANGE);
@@ -301,27 +300,7 @@ void DetermineNumofDigits(std::vector<int>& newlist, Sequence& seq) {
         InsertTerms(seq, strlist);
     }
 }
-void FH(std::vector<int>& terms) {
-
-    // 2, 5, 7, 12, 19....
-
-    // 2, 5, 7, 12, 9, 14, 14, 19, ?, 16
-    // 2, 5, 7, 12, 12, 17, 19, ?, ?, 29
-    // 2, 5, 7, 16, 12, 21, 23, ?, 28, ?, 33, 42
-    // 2, 5, 7, 16, 23, 32, ?, 64
-    // 2, 5, 7, 12, 19, 24, ?, 36, 43, ?
-    // 3, 5, 8, 14, 13, ?, 22, 28, ?, 33
-
-    // 2, 5, 10, 60, 20, 120, 120, ?, 40, ?
-    // 2, 5, 10, 60, 50, 300, 600, 3600,
-
-    // 9, 7, 6, 22, 28, 37, ?, 59, 65, ?, 74, ?
-    // 3, 3, 7, 13, 21, 23, 31, 41, ?, 57, 65
-    // 3, 3, 7, 13, 21, 27, ?, 67, 128, 134
-    // 3, 3, 7, 21, 39, ?, 143
-    // 2, 5, 6, 10, 40, 30, ?, 60, 240, 400, 1600
-}
-void FHelper2(std::vector<int>& terms, int ismul, int notaltfibo, int distinct, int constant, int mul) {
+void FiboVariant(Sequence &seq) {
 }
 void FibonacciHelper(std::vector<int>& terms) {
     int firstterm = 0;

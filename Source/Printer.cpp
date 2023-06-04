@@ -9,19 +9,19 @@ void PrintToFile(int seqs, std::ostream& terms, std::ostream& sols) {
     Sequence seq;
     int funct;
     while (x < seqs) {
-        funct = (rand() % 5);
+        funct = (rand() % 4);
         if (funct < 2) {
-            BasicSeqGen(seq);
+            funct = rand() % 10;
+            if (funct != 9)
+                BasicSeqGen(seq);
+            else
+                SumsAndProducts(seq);
         }
-        else if (funct == 2) {
+        else if (funct == 2)
             DigitGrouping(seq);
-        }
-        else if (funct == 3) {
+        else 
             Fibonacci(seq);
-        }
-        else {
-            SumsAndProducts(seq);
-        }
+
         size_t termsz = seq.terms.size();
         size_t solsz = seq.solutions.size();
         size_t totalsz = termsz + solsz;
@@ -81,7 +81,6 @@ void PrintToFile(int seqs, std::ostream& terms, std::ostream& sols) {
         x++;
     }
 }
-
 void PrintVal(std::string val, std::ostream& stream) {
     stream << val;
 }

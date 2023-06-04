@@ -11,7 +11,8 @@ int intlen(int num) {
     }
     return length;
 }
-int isPrime(int num) {
+int isPrime(int num)
+{
     bool isprime = true;
     if (num == 1)
         return -1;
