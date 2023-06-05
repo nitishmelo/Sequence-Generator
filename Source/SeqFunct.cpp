@@ -1,6 +1,7 @@
 #include "../include/SeqFunct.h"
 #include "../include/Helpers.h"
 #include <cstdlib>
+#include <iostream>
 #include <math.h>
 #include <string>
 #include <algorithm>
@@ -126,7 +127,7 @@ void DigitGrouping(Sequence& seq) {
     int numofTerms = 0;
     int counter = 0;
     int firstterm = 0;
-
+    bool in5 = false;
     std::vector<int> terms;
 
     bool isgeo = (rand() % 2);
@@ -189,6 +190,8 @@ void DigitGrouping(Sequence& seq) {
                 firstterm = 1 + (rand() % 50);
 
             terms.push_back(firstterm);
+            if (constant < 5)
+                in5 = true;
 
             while (counter < numofTerms - 1){
                 if (noalt){
@@ -196,7 +199,7 @@ void DigitGrouping(Sequence& seq) {
                     counter++;
                     continue;
                 }
-                if (constant < 5)
+                if (in5)
                     GenerateTerms(terms, isgeo, constant++, counter, 0);
                 else
                     GenerateTerms(terms, isgeo, constant--, counter, 0);
@@ -294,7 +297,6 @@ void DetermineNumofDigits(std::vector<int>& newlist, Sequence& seq) {
         int chars = strlist[0].length();
         if (chars > 1 && strlist.size() > 6){
             int norandIndex = rand() % 5;
-            norandIndex = 0;
             if (!norandIndex){
                 std::vector<int> indices;
                 int noShuffle = rand() % 10;
