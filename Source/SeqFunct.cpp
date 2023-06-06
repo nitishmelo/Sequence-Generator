@@ -147,7 +147,7 @@ void DigitGrouping(Sequence& seq) {
                 constant = 2 + (rand() % 9);
                 secondval = 1 + (rand() % 10);
                 int negval = (rand() % 2);
-                if (negval && ((firstterm * constant) > 15))
+                if (negval && ((firstterm * constant) > 16))
                     secondval = secondval * -1;
             }
             else {
@@ -394,7 +394,7 @@ void FibonacciHelper(std::vector<int>& terms) {
         }
         else {
             if (!isgeo)
-                numofTerms += (rand() % 3); 
+                numofTerms += (1 + (rand() % 2)); 
             for (int i = 2; i < numofTerms; i += 2) {
                 int val = terms[i - 1] + terms[i - 2];
                 terms.push_back(val);
@@ -438,7 +438,7 @@ void FibonacciHelper(std::vector<int>& terms) {
                     }
                 }
                 else {
-                    numofTerms += (rand() % 3);
+                    numofTerms += (1 + (rand() % 2));
                     for (int i = 2; i < numofTerms; i += 2) {
                         int val = terms[i - 1] * terms[i - 2];
                         terms.push_back(val);
