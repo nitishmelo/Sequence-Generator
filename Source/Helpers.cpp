@@ -14,7 +14,7 @@ int intlen(int num) {
 int isPrime(int num)
 {
     bool isprime = true;
-    if (num == 1)
+    if (num == 1 || num < 10)
         return -1;
 
     std::vector<int> factors;

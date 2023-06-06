@@ -6,7 +6,7 @@
 #include <chrono>
 #include <iomanip>
 
-#define SEQUENCE_LIMIT 100000
+#define SEQUENCE_LIMIT 1000000
 
 int main() {
     int seqs;

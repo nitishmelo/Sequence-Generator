@@ -134,6 +134,7 @@ void DigitGrouping(Sequence& seq) {
     int addandmul = (rand() % 8);
     int constant = 0;
     int secondval = 0;
+    int incrVal = 0;
 
     if (addandmul < 4) {
         firstterm = 1 + (rand() % 9);
@@ -207,17 +208,27 @@ void DigitGrouping(Sequence& seq) {
             }
         }
         else {
-            firstterm = 1 + (rand() % 9);
+            firstterm = 1 + (rand() % 50);
             terms.push_back(firstterm);
-            numofTerms = 6 + (rand() % 2);
+            numofTerms = 7 + (rand() % 2);
             int nosub = rand() % 2;
 
-            if (noalt)
-                constant = 1 + (rand() % 45);
-            else if (nosub)
-                constant = 1 + (rand() % 45);
+            if (noalt){
+                if (firstterm > 9)
+                    constant = 13 + (rand() % 48);
+                else
+                    constant = 5 + (rand() % 45);
+            }
             else
-                constant = 3 + (rand() % 45);
+                if (nosub){
+                    incrVal = 1 + (rand() % 10);
+                    if (firstterm > 9)
+                        constant = 6 + (rand() % 45);
+                    else
+                        constant = 3 + (rand() % 48);
+                }
+                else
+                    constant = 3 + (rand() % 48);
 
             while (counter < numofTerms - 1){
                 if (noalt){
@@ -225,8 +236,11 @@ void DigitGrouping(Sequence& seq) {
                     counter++;
                     continue;  
                 }
-                if (nosub)
-                    GenerateTerms(terms, isgeo, constant++, counter, 0);
+
+                if (nosub){
+                    GenerateTerms(terms, isgeo, constant, counter, 0);
+                    constant += incrVal;
+                }
                 else
                     GenerateTerms(terms, isgeo, constant--, counter, 0);
                 counter++;
@@ -379,6 +393,8 @@ void FibonacciHelper(std::vector<int>& terms) {
             }
         }
         else {
+            if (!isgeo)
+                numofTerms += (rand() % 3); 
             for (int i = 2; i < numofTerms; i += 2) {
                 int val = terms[i - 1] + terms[i - 2];
                 terms.push_back(val);
@@ -422,6 +438,7 @@ void FibonacciHelper(std::vector<int>& terms) {
                     }
                 }
                 else {
+                    numofTerms += (rand() % 3);
                     for (int i = 2; i < numofTerms; i += 2) {
                         int val = terms[i - 1] * terms[i - 2];
                         terms.push_back(val);
