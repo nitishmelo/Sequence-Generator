@@ -48,12 +48,12 @@ void Randomindices(int numofTerms, std::vector<int>& missingindices, bool isgeo)
     bool specialcase = false;
     if (isgeo)
         specialcase = true;
-    if (numofTerms < 7) {
+    if (numofTerms < 6) {
         numofmissing = 1;
         specialcase = false;
     }
     else
-        numofmissing = 2 + (rand() % 2);
+        numofmissing = 2;
     
     RandomIndiceGen(missingindices, numofTerms - 2, numofmissing, 1);
 
@@ -570,7 +570,7 @@ void BasicSeqGen(Sequence& seq) {
         int checkcons = constant;
         if (checkcons < 0)
             checkcons = checkcons * -1;
-        ismulalteralt = (mulcheck) && (checkcons < 5) && (numofTerms > 5);
+        ismulalteralt = (mulcheck) && (checkcons < 5) && (numofTerms > 6);
         if (constant % 2 != 0 && ismulalteralt) {
             while (true) {
                 mulalter = 2 + (rand() % 5);
@@ -583,7 +583,7 @@ void BasicSeqGen(Sequence& seq) {
     int counter = 0;
     int savedcons = constant;
     bool doaddalter = (numofTerms == 7 || (seq.missingindices.size() == 2));
-    if (numofTerms > 5) {
+    if (numofTerms > 6) {
         if (!isgeo) {
             while (counter < numofTerms - 1) {
                 GenerateTerms(terms, isgeo, constant, counter, false);
