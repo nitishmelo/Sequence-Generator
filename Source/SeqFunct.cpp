@@ -9,10 +9,10 @@
 #include <chrono>
 
 void Randominit(int info[2]) {
-    info[0] = 5 + (rand() % TERMS_RANGE);
+    info[0] = 6 + (rand() % TERMS_RANGE);
     info[1] = 1 + (rand() % FIRST_TERM_RANGE);
-    int isnegative = (rand() % 5);
-    if (isnegative == 3)
+    int isNotnegative = (rand() % 5);
+    if (!isNotnegative)
         info[1] = info[1] * -1;
 }
 int RandomAddConstant() {
@@ -48,7 +48,7 @@ void Randomindices(int numofTerms, std::vector<int>& missingindices, bool isgeo)
     bool specialcase = false;
     if (isgeo)
         specialcase = true;
-    if (numofTerms < 6) {
+    if (numofTerms == 6) {
         numofmissing = 1;
         specialcase = false;
     }

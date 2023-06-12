@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 
-#define TERMS_RANGE 4
+#define TERMS_RANGE 2
 #define FIRST_TERM_RANGE 50
 #define ADD_RANGE 20
 #define MUL_RANGE 9
